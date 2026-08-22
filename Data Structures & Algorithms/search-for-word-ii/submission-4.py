@@ -1,0 +1,55 @@
+class Solution:
+    class TrieNode:
+        def __init__(self):
+            self.word = None 
+            self.children = dict()
+
+    def addWord(self, trie_root: TrieNode, word: str):
+        current = trie_root
+
+        for c in word:
+            if c not in current.children:
+                current.children[c] = self.TrieNode()
+            current = current.children[c]
+
+        current.word = word
+
+    def buildTrie(self, words: list[str]) -> TrieNode:
+        root = self.TrieNode()
+        for word in words:
+            self.addWord(root, word)
+
+        return root
+
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        # Omydays finally wth was this shit
+        # mark visited nodes on grid instead of set for faster speed.
+        # Time O(m*n*3^(t)+s) ; Space O(s)
+        # m = # rows ; n = # cols ; t = max len of word... = m*n ; s = total len all words
+        root = self.buildTrie(words)
+        res = set()
+        
+        def dfs(node, i, j):
+            if (not (0 <= i < len(board))) or (not (0 <= j < len(board[0]))) or not board[i][j]: return
+
+            letter = board[i][j]
+            if letter not in node.children:
+                return
+
+            new_node = node.children[letter]
+            if new_node.word:
+                res.add(new_node.word)
+
+            board[i][j] = None
+            dfs(new_node, i-1, j)
+            dfs(new_node, i+1, j)
+            dfs(new_node, i, j-1)
+            dfs(new_node, i, j+1)
+            board[i][j] = letter
+
+
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                dfs(root, i, j)
+
+        return list(res)
