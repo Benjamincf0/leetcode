@@ -1,0 +1,13 @@
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n in { 1, 2 }: return n
+        dp = [0]*(n+1)
+
+        dp[-1] = dp[-2] = 1
+
+        for i in range(len(dp)-3, -1, -1):
+            print(i, dp)
+            dp[i] = dp[i+1]+dp[i+2]
+
+        print(dp)
+        return dp[0]
